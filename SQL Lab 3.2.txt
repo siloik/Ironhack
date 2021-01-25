@@ -1,0 +1,73 @@
+########### LAB 3.2 Instructions #############
+
+# 1) Write a query to display for each store its store ID, city, and country.
+
+SELECT 
+	s.store_id, 
+	c.city, 
+	cy.country
+FROM store s 
+INNER JOIN address a ON s.address_id = a.address_id
+INNER JOIN city c ON c.city_id = a.city_id
+INNER JOIN country cy ON cy.country_id = c.country_id;
+
+# 2) Write a query to display how much business, in dollars, each store brought in.
+
+select 
+	SUM(p.amount) AS SalesByStore, 
+	s.store_id 
+FROM sakila.payment p
+INNER JOIN sakila.store s on p.staff_id = s.manager_staff_id
+group by s.store_id;
+
+# 3) What is the average running time of films by category?
+
+SELECT 
+	AVG(fi.length) as AVG_FilmLength, 
+	ca.category_id, 
+	ca.name
+FROM sakila.film fi
+inner join sakila.film_category fca on fi.film_id = fca.film_id   
+inner join sakila.category as ca on fca.category_id = ca.category_id
+GROUP BY  ca.category_id, ca.name
+ORDER BY AVG_FilmLength desc;
+
+# 5) Display the most frequently rented movies in descending order.
+
+select 
+	f.title, 
+	COUNT(r.rental_date)
+from sakila.film f
+join sakila.inventory i on i.film_id = f.film_id
+join sakila.rental r on r.inventory_id = i.inventory_id
+group by f.title
+order by COUNT(r.rental_date) desc;
+
+# 6) List the top five genres in gross revenue in descending order.
+
+select 
+	ac.name, 
+	SUM(p.amount) as TotalRev
+from sakila.category ac
+join sakila.film_category fc on fc.category_id = ac.category_id
+join inventory i on i.film_id = fc.film_id
+join rental r on r.inventory_id = i.inventory_id
+join payment p on p.rental_id = r.rental_id
+group by ac.name
+order by sum(p.amount) desc
+limit 5;
+
+# 7) Is "Academy Dinosaur" available for rent from Store 1?
+
+select 
+	DISTINCT(f.title), 
+	i.store_id
+from sakila.film f
+join sakila.inventory i on i.film_id = f.film_id
+join sakila.rental r on r.inventory_id = i.inventory_id
+where f.title like '%Academy Dinosaur%' and i.store_id = 1;
+
+
+
+
+
