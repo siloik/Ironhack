@@ -1,0 +1,59 @@
+########### LAB 3.1 Instructions #############
+
+#1.	List number of films per category.
+
+SELECT 
+	COUNT(fi.film_id) as NumberOfFilms, 
+	ca.category_id, ca.name
+FROM sakila.film fi
+inner join sakila.film_category fca on fi.film_id = fca.film_id   
+inner join sakila.category as ca on fca.category_id = ca.category_id
+GROUP BY  ca.category_id, ca.name
+ORDER BY NumberOfFilms desc;
+
+#2.	Display the first and last names, as well as the address, of each staff member.
+
+SELECT 
+	s.first_name, 
+	s.last_name, 
+	ls.address, 
+	ls.city
+FROM sakila.staff s
+INNER JOIN staff_list ls on ls.ID = s.staff_id;
+
+#3.	Display the total amount rung up by each staff member in August of 2005.
+
+SELECT 
+	SUM(amount) AS TotalPerStaff, 
+	staff_id
+FROM sakila.payment 
+WHERE payment_date between '2005-08-01' and '2005-08-31'
+GROUP BY staff_id; 
+
+#4.	List each film and the number of actors who are listed for that film
+
+SELECT 
+	f.film_id, 
+	f.title, 
+	COUNT(fa.actor_id) AS NumberOfActors
+FROM sakila.film f 
+join sakila.film_actor fa on f.film_id = fa. film_id
+group by f.film_id, f.title
+order by NumberOfActors desc;
+
+#5.	Using the tables payment and customer and the JOIN command, list the total paid by each customer. List the customers alphabetically by last names
+
+select 
+	c.first_name,
+	c.last_name, 
+	sum(p.amount) as 'TotalPaid'
+from payment p
+join customer c
+on p.customer_id = c.customer_id
+group by p.customer_id
+order by c.last_name;
+
+
+
+
+
