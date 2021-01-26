@@ -1,0 +1,34 @@
+############################ SQL LAB 3.3 #############################
+
+# 1) Get all pairs of actors that worked together
+
+select 
+	f.title as 'Film Title', 
+	fa1.actor_id AS 'Actor ID 1', 
+	fa2.actor_id AS 'Actor ID 2', 
+	concat(a1.first_name," ", a1.last_name) AS 'Actor 1 Name', 
+	concat(a2.first_name," ", a2.last_name) AS'Actor 2 Name'
+from sakila.film f
+join sakila.film_actor fa1 on f.film_id = fa1.film_id
+join sakila.actor a1 on fa1.actor_id = a1.actor_id
+join sakila.film_actor fa2 on f.film_id = fa2.film_id
+join sakila.actor a2on fa2.actor_id = a2.actor_id
+where a1.actor_id != a2.actor_id and a2.actor_id > a1.actor_id
+order by a1.actor_id, a2.actor_id;
+
+# 2) Get all pairs of customers that have rented the same film more than 3 times.
+
+select
+	a.actor_id AS Actor_1,
+	b.actor_id AS Actor_2,
+	a.film_id
+from sakila.film_actor a
+join sakila.film_actor b on a.actor_id < b.actor_id
+ORDER BY a.film_id;
+
+# 3) Get all possible pairs of actors and films.
+
+SELECT distinct(f.title) as 'Title', 
+concat(a.first_name," ", a.last_name) as Name
+from sakila.film f
+	cross join sakila.actor a      	
