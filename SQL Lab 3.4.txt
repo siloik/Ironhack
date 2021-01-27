@@ -1,0 +1,31 @@
+############################ SQL LAB 3.4 #############################
+
+SELECT d.name AS 'Department_Name', 
+COUNT(*) AS 'No_of_Employees' 
+FROM department d
+INNER JOIN employee e
+ON e.dept_id = d.id 
+GROUP BY d.name 
+ORDER BY COUNT(*) desc,
+d.name;
+
+select em.name, uin.uin, em.age, em.id
+from Employee em
+join Employee_uin uin on em.id = uin.id 
+where age < 25
+order by em.name, uin.id;
+
+SELECT d.name AS 'Department_Name', 
+COUNT(*) AS 'No_of_Employees' 
+FROM department d
+INNER JOIN employee e
+ON e.dept_id = d.id 
+GROUP BY d.name 
+ORDER BY COUNT(*) desc,
+d.name;
+
+select em.name, uin.uin, em.age, em.id
+from Employee em
+join Employee_uin uin on em.id = uin.id 
+where age < 25
+order by em.name, uin.id;
