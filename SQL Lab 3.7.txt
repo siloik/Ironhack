@@ -1,0 +1,62 @@
+################################ SQL Lab 3.6 ######################################
+
+# 1) Get number of monthly active customers.
+
+CREATE VIEW active_customer AS #creating a view that gives me all active customers and their IDs
+SELECT active, customer_id
+FROM sakila.customer
+WHERE active = 1;
+
+select * from active_customer;
+
+with active_customer as
+(
+	select customer_id, 
+	convert(rental_date, date) as activity_date,
+	 date_format(convert(rental_date,date), '%M') as activity_month,
+ 	 date_format(convert(rental_date,date), '%Y') as activity_year
+	from sakila.rental
+)
+select 
+	activity_year, activity_month, COUNT(customer_id)
+	from active_customer
+	group by activity_year, activity_month
+	order by activity_year, activity_month;
+	
+	
+# 2) Active users in the previous month. 
+
+select * 
+from   
+(
+select 
+	date_format(rental_date, '%Y') years, 
+    date_format(rental_date, '%M') months,
+    count(DISTINCT customer_id) UserThisMonth, 
+    Lag(Count(DISTINCT customer_id))
+		OVER 
+			( 
+            ORDER BY date_format(rental_date,'%Y'), date_format(rental_date,'%M') 
+                 ) UserPreviousMonth 
+FROM  sakila.rental 
+GROUP  BY date_format(rental_date, '%Y'), date_format(rental_date, '%M')) t 
+WHERE userpreviousmonth IS NOT NULL; 
+
+
+# 3) Percentage change in the number of active customers.
+
+
+select ((count(distinct(customer_id))) - lag((count(distinct(customer_id))) -1)over()))
+/(count(distinct(customer_id)))*100
+from
+(
+	select count(distinct(customer_id)), 
+	date_format(rental_date, '%Y'),
+	date_format(rental_date, '%M')
+	from sakila.rental
+	group by date_format(rental_date, '%Y'), date_format(rental_date, '%M')
+)sub;
+
+
+#4) Retained customers every month.
+
